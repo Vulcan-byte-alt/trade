@@ -1,0 +1,8 @@
+# Additional dependencies for Quantum Momentum Pro Strategy
+# Base dependencies are inherited from base-bot-template/requirements.txt
+
+# All core dependencies (requests, psycopg2-binary, etc.) are in base template
+# This file is for strategy-specific additions only
+
+# No additional dependencies needed for this strategy
+# All calculations use Python standard library (statistics, collections, etc.)
