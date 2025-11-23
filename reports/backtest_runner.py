@@ -299,10 +299,10 @@ def run_contest_backtest():
         "min_position_pct": 0.40,  # Increased from 0.30
 
         # Signal Strength
-        "min_signal_strength": 0.70,  # 70% minimum (prevents weak signals)
+        "min_signal_strength": 0.55,  # 55% minimum (balanced filtering)
 
         # Trade Frequency Control
-        "min_hours_between_trades": 24,  # Prevent overtrading
+        "max_trades_per_month": 3,  # Max 3 trades per month (18 total over 6 months)
 
         # Risk Management (optimized for trending markets)
         "stop_loss_atr_multiplier": 2.5,  # Wider stops for trends

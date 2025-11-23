@@ -85,13 +85,14 @@ class QuantumMomentumProStrategy(BaseStrategy):
         self.trailing_stop_pct = float(config.get("trailing_stop_pct", 0.06))  # 6% (increased from 4%)
 
         # Signal strength threshold
-        self.min_signal_strength = float(config.get("min_signal_strength", 0.70))  # 70% (increased from 50%)
+        self.min_signal_strength = float(config.get("min_signal_strength", 0.55))  # 55% (reduced from 70%)
 
         # Max drawdown protection
         self.max_drawdown_pct = float(config.get("max_drawdown_pct", 0.35))  # 35%
 
-        # Trade frequency control
-        self.min_hours_between_trades = int(config.get("min_hours_between_trades", 24))  # At least 24 hours between trades
+        # Trade frequency control - use trade count instead of timestamp
+        self.max_trades_per_month = int(config.get("max_trades_per_month", 3))  # Max 3 trades per month per symbol
+        self.trade_count_by_month: Dict[str, int] = {}  # Track trades by month
 
         # State tracking
         self.positions: Deque[Dict[str, Any]] = deque()
@@ -284,11 +285,12 @@ class QuantumMomentumProStrategy(BaseStrategy):
         if len(prices) < self.ema_slow:
             return False, 0.0, "Insufficient data for indicators"
 
-        # Trade frequency cooldown (prevent overtrading)
-        if self.last_trade_time and market.timestamp:
-            hours_since_last_trade = (market.timestamp - self.last_trade_time).total_seconds() / 3600
-            if hours_since_last_trade < self.min_hours_between_trades:
-                return False, 0.0, f"Cooldown active: {hours_since_last_trade:.1f}h / {self.min_hours_between_trades}h"
+        # Trade frequency control (prevent overtrading)
+        if market.timestamp:
+            month_key = market.timestamp.strftime("%Y-%m")
+            trades_this_month = self.trade_count_by_month.get(month_key, 0)
+            if trades_this_month >= self.max_trades_per_month:
+                return False, 0.0, f"Monthly trade limit reached: {trades_this_month}/{self.max_trades_per_month}"
 
         # Don't buy if we have significant holdings
         current_value = portfolio.value(market.current_price)
@@ -369,21 +371,13 @@ class QuantumMomentumProStrategy(BaseStrategy):
                 size = portfolio.quantity * sell_pct
                 return True, size, f"TAKE PROFIT {i+1} at {pnl_pct*100:.2f}%"
 
-        # 4. Technical exit signals
+        # 4. Only exit on extreme overbought with good profit
+        prices = list(self.price_history) + [current_price]
         rsi = self._calculate_rsi(prices, self.rsi_period)
-        if rsi and rsi > self.rsi_overbought:
-            # Overbought - consider partial exit
-            if pnl_pct > 0.02:  # At least 2% profit
-                return True, portfolio.quantity * 0.5, f"RSI overbought exit at {pnl_pct*100:.2f}%"
+        if rsi and rsi > 80 and pnl_pct > 0.10:  # RSI > 80 AND profit > 10%
+            return True, portfolio.quantity * 0.5, f"Extreme overbought exit at {pnl_pct*100:.2f}%"
 
-        # 5. Trend reversal
-        ema_fast = self._calculate_ema(prices, self.ema_fast)
-        ema_medium = self._calculate_ema(prices, self.ema_medium)
-        if ema_fast and ema_medium and ema_fast < ema_medium:
-            # Bearish crossover
-            if pnl_pct > -0.05:  # Not more than 5% loss
-                return True, portfolio.quantity, f"Trend reversal exit at {pnl_pct*100:.2f}%"
-
+        # Otherwise, hold and let the position develop
         return False, 0.0, "Hold position"
 
     # ==================== MAIN STRATEGY METHOD ====================
@@ -434,8 +428,10 @@ class QuantumMomentumProStrategy(BaseStrategy):
     def on_trade(self, signal: Signal, execution_price: float, execution_size: float, timestamp: datetime) -> None:
         """Update strategy state after trade execution."""
         if signal.action == "buy" and execution_size > 0:
-            # Update last trade time for cooldown
-            self.last_trade_time = timestamp if timestamp else datetime.now(timezone.utc)
+            # Update trade count for the month
+            ts = timestamp if timestamp else datetime.now(timezone.utc)
+            month_key = ts.strftime("%Y-%m")
+            self.trade_count_by_month[month_key] = self.trade_count_by_month.get(month_key, 0) + 1
 
             # Calculate new average entry price
             if self.entry_price and self.current_quantity > 0:
@@ -488,7 +484,7 @@ class QuantumMomentumProStrategy(BaseStrategy):
             "highest_price_since_entry": self.highest_price_since_entry,
             "starting_portfolio_value": self.starting_portfolio_value,
             "current_quantity": self.current_quantity,
-            "last_trade_time": self.last_trade_time.isoformat() if self.last_trade_time else None,
+            "trade_count_by_month": self.trade_count_by_month,
             "price_history": list(self.price_history)
         }
 
@@ -499,11 +495,7 @@ class QuantumMomentumProStrategy(BaseStrategy):
         self.highest_price_since_entry = state.get("highest_price_since_entry")
         self.starting_portfolio_value = state.get("starting_portfolio_value")
         self.current_quantity = state.get("current_quantity", 0.0)
-
-        # Restore last trade time
-        last_trade_str = state.get("last_trade_time")
-        if last_trade_str:
-            self.last_trade_time = datetime.fromisoformat(last_trade_str)
+        self.trade_count_by_month = state.get("trade_count_by_month", {})
 
         if "price_history" in state:
             self.price_history = deque(state["price_history"], maxlen=self.price_history.maxlen)
