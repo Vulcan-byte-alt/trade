@@ -1,0 +1,14 @@
+{
+  "combined_return_pct": 0.0,
+  "combined_pnl": 0,
+  "total_trades": 0,
+  "avg_win_rate_pct": 0.0,
+  "max_drawdown_pct": 0,
+  "btc_results": {
+    "error": "Failed to load data for BTC-USD: No data received for BTC-USD after 3 attempts"
+  },
+  "eth_results": {
+    "error": "Failed to load data for ETH-USD: No data received for ETH-USD after 3 attempts"
+  },
+  "beats_current_leader": false
+}
