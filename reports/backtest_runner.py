@@ -56,35 +56,16 @@ class BacktestEngine:
         print(f"   Period: {start_date} to {end_date}")
         print(f"   Interval: 1 hour")
 
-        # Try multiple times with retry logic
-        import time
-        max_retries = 3
-        for attempt in range(max_retries):
-            try:
-                # Use download() which is more reliable than Ticker().history()
-                self.data = yf.download(
-                    symbol,
-                    start=start_date,
-                    end=end_date,
-                    interval="1h",
-                    progress=False,
-                    threads=False  # Avoid multitasking module issues
-                )
+        ticker = yf.Ticker(symbol)
+        self.data = ticker.history(start=start_date, end=end_date, interval="1h")
 
-                if self.data is not None and not self.data.empty:
-                    print(f"   ✅ Loaded {len(self.data)} hourly candles")
-                    break
-                elif attempt < max_retries - 1:
-                    print(f"   ⚠️  No data received, retrying... (attempt {attempt + 1}/{max_retries})")
-                    time.sleep(3)
-                else:
-                    raise ValueError(f"No data received for {symbol} after {max_retries} attempts")
-            except Exception as e:
-                if attempt < max_retries - 1:
-                    print(f"   ⚠️  Error: {e}, retrying... (attempt {attempt + 1}/{max_retries})")
-                    time.sleep(3)
-                else:
-                    raise ValueError(f"Failed to load data for {symbol}: {e}")
+        if self.data is None:
+            raise ValueError(f"No data received for {symbol} - got None")
+
+        if self.data.empty:
+            raise ValueError(f"No data received for {symbol} - empty DataFrame")
+
+        print(f"   ✅ Loaded {len(self.data)} hourly candles")
 
     def run(self, strategy_config: Dict[str, Any]) -> Dict[str, Any]:
         """Run backtest with given strategy configuration."""

@@ -5,10 +5,10 @@
   "avg_win_rate_pct": 0.0,
   "max_drawdown_pct": 0,
   "btc_results": {
-    "error": "Failed to load data for BTC-USD: No data received for BTC-USD after 3 attempts"
+    "error": "argument of type 'NoneType' is not iterable"
   },
   "eth_results": {
-    "error": "Failed to load data for ETH-USD: No data received for ETH-USD after 3 attempts"
+    "error": "argument of type 'NoneType' is not iterable"
   },
   "beats_current_leader": false
 }
