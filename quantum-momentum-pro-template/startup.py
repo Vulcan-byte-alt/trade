@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Startup script for Quantum Momentum Pro Strategy Bot."""
+"""Startup script for Simple Trend Strategy Bot."""
 
 import sys
 import os
@@ -11,8 +11,8 @@ if not os.path.exists(base_path):
 
 sys.path.insert(0, base_path)
 
-# Import and register the strategy
-import quantum_momentum_pro
+# Import and register the NEW simple trend strategy
+import simple_trend_strategy
 
 # Import and start the universal bot
 from universal_bot import UniversalBot
