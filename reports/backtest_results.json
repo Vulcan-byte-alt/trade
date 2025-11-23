@@ -1,14 +1,701 @@
 {
-  "combined_return_pct": 0.0,
-  "combined_pnl": 0,
-  "total_trades": 0,
-  "avg_win_rate_pct": 0.0,
-  "max_drawdown_pct": 0,
+  "combined_return_pct": 9.954223759314635,
+  "combined_pnl": 1990.8447518629273,
+  "total_trades": 78,
+  "avg_win_rate_pct": 3.3333333333333335,
+  "max_drawdown_pct": 11.27519374208358,
   "btc_results": {
-    "error": "argument of type 'NoneType' is not iterable"
+    "symbol": "BTC-USD",
+    "starting_cash": 10000.0,
+    "final_value": 12028.81293779849,
+    "total_return_pct": 20.288129377984895,
+    "total_pnl": 2028.8129377984897,
+    "total_trades": 30,
+    "buy_trades": 15,
+    "sell_trades": 15,
+    "win_rate_pct": 6.666666666666667,
+    "max_drawdown_pct": 4.030137921156234,
+    "sharpe_ratio": 2.078476441326762,
+    "trades": [
+      {
+        "timestamp": "2024-01-08T12:00:00+00:00",
+        "side": "buy",
+        "price": 45140.875,
+        "size": 0.12184079285126839,
+        "cost": 5500.0,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-01-09T21:00:00+00:00",
+        "side": "sell",
+        "price": 45528.08203125,
+        "size": 0.12184079285126839,
+        "proceeds": 5547.177611685086,
+        "pnl": 47.17761168508586,
+        "reason": "Trend reversal - exit at +0.9%"
+      },
+      {
+        "timestamp": "2024-01-26T11:00:00+00:00",
+        "side": "buy",
+        "price": 41279.234375,
+        "size": 0.13386749463971367,
+        "cost": 5525.947686426797,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-01-28T19:00:00+00:00",
+        "side": "sell",
+        "price": 41786.390625,
+        "size": 0.13386749463971367,
+        "proceeds": 5593.839423005169,
+        "pnl": -5432.108263421627,
+        "reason": "Trend reversal - exit at +1.2%"
+      },
+      {
+        "timestamp": "2024-02-07T20:00:00+00:00",
+        "side": "buy",
+        "price": 44109.109375,
+        "size": 0.12612560580735827,
+        "cost": 5563.288141544901,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-02-13T14:00:00+00:00",
+        "side": "sell",
+        "price": 48741.4609375,
+        "size": 0.12612560580735827,
+        "proceeds": 6147.546288677876,
+        "pnl": -10441.689539293822,
+        "reason": "Trend reversal - exit at +10.5%"
+      },
+      {
+        "timestamp": "2024-02-26T15:00:00+00:00",
+        "side": "buy",
+        "price": 52765.24609375,
+        "size": 0.11152473565673501,
+        "cost": 5884.630122468038,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-03-01T15:00:00+00:00",
+        "side": "sell",
+        "price": 61256.38671875,
+        "size": 0.11152473565673501,
+        "proceeds": 6831.602336095327,
+        "pnl": -15642.263614344409,
+        "reason": "Trend reversal - exit at +16.1%"
+      },
+      {
+        "timestamp": "2024-03-04T07:00:00+00:00",
+        "side": "buy",
+        "price": 64076.93359375,
+        "size": 0.09996522119135597,
+        "cost": 6405.464839963047,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-03-05T16:00:00+00:00",
+        "side": "sell",
+        "price": 65266.7265625,
+        "size": 0.09996522119135597,
+        "proceeds": 6524.40275725606,
+        "pnl": -22354.928033146723,
+        "reason": "Trend reversal - exit at +1.9%"
+      },
+      {
+        "timestamp": "2024-03-08T14:00:00+00:00",
+        "side": "buy",
+        "price": 68576.703125,
+        "size": 0.09435975192157073,
+        "cost": 6470.880694474204,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-03-10T22:00:00+00:00",
+        "side": "sell",
+        "price": 68563.4453125,
+        "size": 0.09435975192157073,
+        "proceeds": 6469.629690575682,
+        "pnl": -28880.581794301306,
+        "reason": "Trend reversal - exit at -0.0%"
+      },
+      {
+        "timestamp": "2024-03-13T08:00:00+00:00",
+        "side": "buy",
+        "price": 73454.90625,
+        "size": 0.08808387312222615,
+        "cost": 6470.1926423300165,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-03-13T13:00:00+00:00",
+        "side": "sell",
+        "price": 71897.0,
+        "size": 0.08808387312222615,
+        "proceeds": 6332.966225868694,
+        "pnl": -35487.43790133831,
+        "reason": "Trend reversal - exit at -2.1%"
+      },
+      {
+        "timestamp": "2024-03-24T21:00:00+00:00",
+        "side": "buy",
+        "price": 66565.9765625,
+        "size": 0.09606586492834178,
+        "cost": 6394.71811327629,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-03-27T15:00:00+00:00",
+        "side": "sell",
+        "price": 68901.3984375,
+        "size": 0.09606586492834178,
+        "proceeds": 6619.072435670734,
+        "pnl": -41596.04980481257,
+        "reason": "Trend reversal - exit at +3.5%"
+      },
+      {
+        "timestamp": "2024-04-04T14:00:00+00:00",
+        "side": "buy",
+        "price": 67723.359375,
+        "size": 0.09624615569497852,
+        "cost": 6518.112990593233,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-04-05T11:00:00+00:00",
+        "side": "sell",
+        "price": 66405.984375,
+        "size": 0.09624615569497852,
+        "proceeds": 6391.320711234561,
+        "pnl": -48341.914519841965,
+        "reason": "Trend reversal - exit at -1.9%"
+      },
+      {
+        "timestamp": "2024-04-07T16:00:00+00:00",
+        "side": "buy",
+        "price": 70061.5546875,
+        "size": 0.092038740300698,
+        "cost": 6448.377236945963,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-04-09T07:00:00+00:00",
+        "side": "sell",
+        "price": 70391.1171875,
+        "size": 0.092038740300698,
+        "proceeds": 6478.709754296312,
+        "pnl": -54702.90271372618,
+        "reason": "Trend reversal - exit at +0.5%"
+      },
+      {
+        "timestamp": "2024-04-19T06:00:00+00:00",
+        "side": "buy",
+        "price": 64579.44921875,
+        "size": 0.10011017745892432,
+        "cost": 6465.060121488655,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-04-21T16:00:00+00:00",
+        "side": "sell",
+        "price": 64592.9609375,
+        "size": 0.10011017745892432,
+        "proceeds": 6466.412782050492,
+        "pnl": -61180.25980746066,
+        "reason": "Trend reversal - exit at +0.0%"
+      },
+      {
+        "timestamp": "2024-05-03T12:00:00+00:00",
+        "side": "buy",
+        "price": 60693.3359375,
+        "size": 0.10653235622863007,
+        "cost": 6465.804084797665,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-05-06T12:00:00+00:00",
+        "side": "sell",
+        "price": 63572.51953125,
+        "size": 0.10653235622863007,
+        "proceeds": 6772.530297054667,
+        "pnl": -67339.94637725413,
+        "reason": "Trend reversal - exit at +4.7%"
+      },
+      {
+        "timestamp": "2024-05-13T07:00:00+00:00",
+        "side": "buy",
+        "price": 62352.71875,
+        "size": 0.1064027942091782,
+        "cost": 6634.503501539017,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-05-14T08:00:00+00:00",
+        "side": "sell",
+        "price": 61830.3203125,
+        "size": 0.1064027942091782,
+        "proceeds": 6578.9188480985085,
+        "pnl": -74168.06132774932,
+        "reason": "Trend reversal - exit at -0.8%"
+      },
+      {
+        "timestamp": "2024-05-17T15:00:00+00:00",
+        "side": "buy",
+        "price": 67205.8046875,
+        "size": 0.09826430875806537,
+        "cost": 6603.931942146737,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-05-19T16:00:00+00:00",
+        "side": "sell",
+        "price": 66666.984375,
+        "size": 0.09826430875806537,
+        "proceeds": 6550.9851365941195,
+        "pnl": -80799.92698140044,
+        "reason": "Trend reversal - exit at -0.8%"
+      },
+      {
+        "timestamp": "2024-06-03T12:00:00+00:00",
+        "side": "buy",
+        "price": 69671.7421875,
+        "size": 0.09436840521941768,
+        "cost": 6574.811199092798,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-06-06T19:00:00+00:00",
+        "side": "sell",
+        "price": 70462.375,
+        "size": 0.09436840521941768,
+        "proceeds": 6649.4219567225655,
+        "pnl": -87276.3013603648,
+        "reason": "Trend reversal - exit at +1.1%"
+      }
+    ]
   },
   "eth_results": {
-    "error": "argument of type 'NoneType' is not iterable"
+    "symbol": "ETH-USD",
+    "starting_cash": 10000.0,
+    "final_value": 9962.031814064438,
+    "total_return_pct": -0.3796818593556236,
+    "total_pnl": -37.96818593556236,
+    "total_trades": 48,
+    "buy_trades": 24,
+    "sell_trades": 24,
+    "win_rate_pct": 0.0,
+    "max_drawdown_pct": 11.27519374208358,
+    "sharpe_ratio": 0.024959591285582065,
+    "trades": [
+      {
+        "timestamp": "2024-01-08T17:00:00+00:00",
+        "side": "buy",
+        "price": 2307.236083984375,
+        "size": 2.383804604209392,
+        "cost": 5500.0,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-01-09T12:00:00+00:00",
+        "side": "sell",
+        "price": 2267.768310546875,
+        "size": 2.383804604209392,
+        "proceeds": 5405.916539961795,
+        "pnl": -94.08346003820564,
+        "reason": "Trend reversal - exit at -1.7%"
+      },
+      {
+        "timestamp": "2024-01-11T14:00:00+00:00",
+        "side": "buy",
+        "price": 2685.71240234375,
+        "size": 2.0286066714456994,
+        "cost": 5448.254096978988,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-01-12T20:00:00+00:00",
+        "side": "sell",
+        "price": 2573.0615234375,
+        "size": 2.0286066714456994,
+        "proceeds": 5219.729772485547,
+        "pnl": -5728.524324493441,
+        "reason": "Trend reversal - exit at -4.2%"
+      },
+      {
+        "timestamp": "2024-01-16T21:00:00+00:00",
+        "side": "buy",
+        "price": 2605.162841796875,
+        "size": 2.043083692548152,
+        "cost": 5322.565718507596,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-01-17T11:00:00+00:00",
+        "side": "sell",
+        "price": 2541.3046875,
+        "size": 2.043083692548152,
+        "proceeds": 5192.098164827427,
+        "pnl": -11078.721650659156,
+        "reason": "Trend reversal - exit at -2.5%"
+      },
+      {
+        "timestamp": "2024-01-26T16:00:00+00:00",
+        "side": "buy",
+        "price": 2276.817626953125,
+        "size": 2.3062051618996917,
+        "cost": 5250.8085639835035,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-01-28T18:00:00+00:00",
+        "side": "sell",
+        "price": 2261.634033203125,
+        "size": 2.3062051618996917,
+        "proceeds": 5215.792081701065,
+        "pnl": -16305.83629776902,
+        "reason": "Trend reversal - exit at -0.7%"
+      },
+      {
+        "timestamp": "2024-02-06T19:00:00+00:00",
+        "side": "buy",
+        "price": 2378.380615234375,
+        "size": 2.199626697769997,
+        "cost": 5231.549498728163,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-02-11T20:00:00+00:00",
+        "side": "sell",
+        "price": 2498.055419921875,
+        "size": 2.199626697769997,
+        "proceeds": 5494.789394169197,
+        "pnl": -21258.388484029052,
+        "reason": "Trend reversal - exit at +5.0%"
+      },
+      {
+        "timestamp": "2024-02-14T08:00:00+00:00",
+        "side": "buy",
+        "price": 2709.5400390625,
+        "size": 1.984222917436917,
+        "cost": 5376.331441220732,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-02-16T15:00:00+00:00",
+        "side": "sell",
+        "price": 2773.2197265625,
+        "size": 1.984222917436917,
+        "proceeds": 5502.6861365334535,
+        "pnl": -26626.82318288553,
+        "reason": "Trend reversal - exit at +2.4%"
+      },
+      {
+        "timestamp": "2024-02-18T22:00:00+00:00",
+        "side": "buy",
+        "price": 2879.254150390625,
+        "size": 1.8914018142177205,
+        "cost": 5445.82652364273,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-02-21T07:00:00+00:00",
+        "side": "sell",
+        "price": 2937.774658203125,
+        "size": 1.8914018142177205,
+        "proceeds": 5556.512318288234,
+        "pnl": -32018.823524773485,
+        "reason": "Trend reversal - exit at +2.0%"
+      },
+      {
+        "timestamp": "2024-02-25T14:00:00+00:00",
+        "side": "buy",
+        "price": 3069.123779296875,
+        "size": 1.7942266609916018,
+        "cost": 5506.703710697758,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-02-29T21:00:00+00:00",
+        "side": "sell",
+        "price": 3350.55322265625,
+        "size": 1.7942266609916018,
+        "proceeds": 6011.651921161174,
+        "pnl": -37070.3876325983,
+        "reason": "Trend reversal - exit at +9.2%"
+      },
+      {
+        "timestamp": "2024-03-04T08:00:00+00:00",
+        "side": "buy",
+        "price": 3534.94189453125,
+        "size": 1.6363565226917762,
+        "cost": 5784.425226452636,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-03-05T19:00:00+00:00",
+        "side": "sell",
+        "price": 3360.62255859375,
+        "size": 1.6363565226917762,
+        "proceeds": 5499.176644060009,
+        "pnl": -43367.2881361521,
+        "reason": "Trend reversal - exit at -4.9%"
+      },
+      {
+        "timestamp": "2024-03-08T13:00:00+00:00",
+        "side": "buy",
+        "price": 3983.547607421875,
+        "size": 1.4126951804597097,
+        "cost": 5627.538506136691,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-03-09T16:00:00+00:00",
+        "side": "sell",
+        "price": 3892.533447265625,
+        "size": 1.4126951804597097,
+        "proceeds": 5498.963240730368,
+        "pnl": -48995.040045618436,
+        "reason": "Trend reversal - exit at -2.3%"
+      },
+      {
+        "timestamp": "2024-03-21T08:00:00+00:00",
+        "side": "buy",
+        "price": 3569.835693359375,
+        "size": 1.5566044455491437,
+        "cost": 5556.8221101632125,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-03-22T11:00:00+00:00",
+        "side": "sell",
+        "price": 3409.359619140625,
+        "size": 1.5566044455491437,
+        "proceeds": 5307.024339630032,
+        "pnl": -54743.80105688199,
+        "reason": "Trend reversal - exit at -4.5%"
+      },
+      {
+        "timestamp": "2024-03-24T22:00:00+00:00",
+        "side": "buy",
+        "price": 3441.34619140625,
+        "size": 1.5748003934923505,
+        "cost": 5419.433336369964,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-03-27T07:00:00+00:00",
+        "side": "sell",
+        "price": 3564.24755859375,
+        "size": 1.5748003934923505,
+        "proceeds": 5612.978457777587,
+        "pnl": -59857.28027510439,
+        "reason": "Trend reversal - exit at +3.6%"
+      },
+      {
+        "timestamp": "2024-03-31T05:00:00+00:00",
+        "side": "buy",
+        "price": 3603.64697265625,
+        "size": 1.5334141204933363,
+        "cost": 5525.883153144157,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-04-01T05:00:00+00:00",
+        "side": "sell",
+        "price": 3520.94677734375,
+        "size": 1.5334141204933363,
+        "proceeds": 5399.069505884413,
+        "pnl": -65597.07238014172,
+        "reason": "Trend reversal - exit at -2.3%"
+      },
+      {
+        "timestamp": "2024-04-04T17:00:00+00:00",
+        "side": "buy",
+        "price": 3413.009765625,
+        "size": 1.598628782754788,
+        "cost": 5456.135647151298,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-04-04T21:00:00+00:00",
+        "side": "sell",
+        "price": 3319.30029296875,
+        "size": 1.598628782754788,
+        "proceeds": 5306.328986946244,
+        "pnl": -71145.94854623119,
+        "reason": "Trend reversal - exit at -2.7%"
+      },
+      {
+        "timestamp": "2024-04-07T23:00:00+00:00",
+        "side": "buy",
+        "price": 3453.281982421875,
+        "size": 1.5561260306549818,
+        "cost": 5373.741984038519,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-04-09T14:00:00+00:00",
+        "side": "sell",
+        "price": 3516.96923828125,
+        "size": 1.5561260306549818,
+        "proceeds": 5472.8473807022765,
+        "pnl": -76353.17213651368,
+        "reason": "Trend reversal - exit at +1.8%"
+      },
+      {
+        "timestamp": "2024-04-20T17:00:00+00:00",
+        "side": "buy",
+        "price": 3155.972900390625,
+        "size": 1.7199925739323407,
+        "cost": 5428.249952203586,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-04-23T04:00:00+00:00",
+        "side": "sell",
+        "price": 3176.849853515625,
+        "size": 1.7199925739323407,
+        "proceeds": 5464.15815654492,
+        "pnl": -81790.11131287462,
+        "reason": "Trend reversal - exit at +0.7%"
+      },
+      {
+        "timestamp": "2024-04-27T17:00:00+00:00",
+        "side": "buy",
+        "price": 3255.77685546875,
+        "size": 1.67333318788119,
+        "cost": 5447.999464591319,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-04-29T02:00:00+00:00",
+        "side": "sell",
+        "price": 3223.67041015625,
+        "size": 1.67333318788119,
+        "proceeds": 5394.274684105021,
+        "pnl": -87307.99424990584,
+        "reason": "Trend reversal - exit at -1.0%"
+      },
+      {
+        "timestamp": "2024-05-03T12:00:00+00:00",
+        "side": "buy",
+        "price": 3034.98974609375,
+        "size": 1.7853275591121163,
+        "cost": 5418.450835323856,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-05-06T12:00:00+00:00",
+        "side": "sell",
+        "price": 3098.461669921875,
+        "size": 1.7853275591121163,
+        "proceeds": 5531.769010164073,
+        "pnl": -92588.95075917064,
+        "reason": "Trend reversal - exit at +2.1%"
+      },
+      {
+        "timestamp": "2024-05-15T18:00:00+00:00",
+        "side": "buy",
+        "price": 3003.851806640625,
+        "size": 1.824582630664271,
+        "cost": 5480.775831485975,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-05-16T14:00:00+00:00",
+        "side": "sell",
+        "price": 2941.90771484375,
+        "size": 1.824582630664271,
+        "proceeds": 5367.753717521124,
+        "pnl": -98233.74188329956,
+        "reason": "Trend reversal - exit at -2.1%"
+      },
+      {
+        "timestamp": "2024-05-20T19:00:00+00:00",
+        "side": "buy",
+        "price": 3440.10693359375,
+        "size": 1.5751294286496744,
+        "cost": 5418.613668805307,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-05-23T14:00:00+00:00",
+        "side": "sell",
+        "price": 3755.41748046875,
+        "size": 1.5751294286496744,
+        "proceeds": 5915.268590351742,
+        "pnl": -103104.84067927428,
+        "reason": "Trend reversal - exit at +9.2%"
+      },
+      {
+        "timestamp": "2024-05-26T14:00:00+00:00",
+        "side": "buy",
+        "price": 3853.05712890625,
+        "size": 1.4772098324095042,
+        "cost": 5691.773875655847,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-05-28T01:00:00+00:00",
+        "side": "sell",
+        "price": 3843.734375,
+        "size": 1.4772098324095042,
+        "proceeds": 5678.0022119204,
+        "pnl": -109033.88093336146,
+        "reason": "Trend reversal - exit at -0.2%"
+      },
+      {
+        "timestamp": "2024-06-16T22:00:00+00:00",
+        "side": "buy",
+        "price": 3626.1884765625,
+        "size": 1.5675410964820489,
+        "cost": 5684.199460601351,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-06-17T06:00:00+00:00",
+        "side": "sell",
+        "price": 3549.178466796875,
+        "size": 1.5675410964820489,
+        "proceeds": 5563.483105453251,
+        "pnl": -114832.59950042996,
+        "reason": "Trend reversal - exit at -2.1%"
+      },
+      {
+        "timestamp": "2024-06-20T07:00:00+00:00",
+        "side": "buy",
+        "price": 3604.474609375,
+        "size": 1.558564305227274,
+        "cost": 5617.805465269897,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-06-20T14:00:00+00:00",
+        "side": "sell",
+        "price": 3519.628662109375,
+        "size": 1.558564305227274,
+        "proceeds": 5485.567600418498,
+        "pnl": -120528.3204707346,
+        "reason": "Trend reversal - exit at -2.4%"
+      },
+      {
+        "timestamp": "2024-06-28T01:00:00+00:00",
+        "side": "buy",
+        "price": 3482.847412109375,
+        "size": 1.5921095539018375,
+        "cost": 5545.074639601627,
+        "reason": "Major trend breakout - 20period high"
+      },
+      {
+        "timestamp": "2024-06-28T14:00:00+00:00",
+        "side": "sell",
+        "price": 3407.524658203125,
+        "size": 1.5921095539018375,
+        "proceeds": 5425.152563481289,
+        "pnl": -126133.81014727343,
+        "reason": "Trend reversal - exit at -2.2%"
+      }
+    ]
   },
   "beats_current_leader": false
 }
