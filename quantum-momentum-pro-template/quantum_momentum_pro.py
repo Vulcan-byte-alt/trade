@@ -92,6 +92,7 @@ class QuantumMomentumProStrategy(BaseStrategy):
         self.entry_price: Optional[float] = None
         self.highest_price_since_entry: Optional[float] = None
         self.starting_portfolio_value: Optional[float] = None
+        self.current_quantity: float = 0.0  # Track our position size
 
         # Price history for indicators
         self.price_history: Deque[float] = deque(maxlen=max(self.ema_slow, self.bb_period, self.atr_period) + 50)
@@ -421,14 +422,15 @@ class QuantumMomentumProStrategy(BaseStrategy):
         """Update strategy state after trade execution."""
         if signal.action == "buy" and execution_size > 0:
             # Calculate new average entry price
-            if self.entry_price and portfolio.quantity > 0:
-                total_value = (self.entry_price * portfolio.quantity) + (execution_price * execution_size)
-                total_quantity = portfolio.quantity + execution_size
+            if self.entry_price and self.current_quantity > 0:
+                total_value = (self.entry_price * self.current_quantity) + (execution_price * execution_size)
+                total_quantity = self.current_quantity + execution_size
                 self.entry_price = total_value / total_quantity
             else:
                 self.entry_price = execution_price
 
             self.highest_price_since_entry = execution_price
+            self.current_quantity += execution_size
 
             self.positions.append({
                 "price": execution_price,
@@ -439,6 +441,9 @@ class QuantumMomentumProStrategy(BaseStrategy):
             self._logger.info(f"BUY executed: {execution_size:.8f} @ ${execution_price:,.2f}")
 
         elif signal.action == "sell" and execution_size > 0:
+            # Update quantity
+            self.current_quantity -= execution_size
+
             # Remove sold positions (FIFO)
             remaining = execution_size
             while self.positions and remaining > 0:
@@ -454,6 +459,7 @@ class QuantumMomentumProStrategy(BaseStrategy):
             if len(self.positions) == 0:
                 self.entry_price = None
                 self.highest_price_since_entry = None
+                self.current_quantity = 0.0  # Reset to zero
 
             pnl = (execution_price - (signal.entry_price or execution_price)) * execution_size
             self._logger.info(f"SELL executed: {execution_size:.8f} @ ${execution_price:,.2f} (PnL: ${pnl:,.2f})")
@@ -465,6 +471,7 @@ class QuantumMomentumProStrategy(BaseStrategy):
             "entry_price": self.entry_price,
             "highest_price_since_entry": self.highest_price_since_entry,
             "starting_portfolio_value": self.starting_portfolio_value,
+            "current_quantity": self.current_quantity,
             "price_history": list(self.price_history)
         }
 
@@ -474,6 +481,7 @@ class QuantumMomentumProStrategy(BaseStrategy):
         self.entry_price = state.get("entry_price")
         self.highest_price_since_entry = state.get("highest_price_since_entry")
         self.starting_portfolio_value = state.get("starting_portfolio_value")
+        self.current_quantity = state.get("current_quantity", 0.0)
         if "price_history" in state:
             self.price_history = deque(state["price_history"], maxlen=self.price_history.maxlen)
 
