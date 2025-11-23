@@ -73,19 +73,25 @@ class QuantumMomentumProStrategy(BaseStrategy):
         # Position sizing
         self.base_position_pct = float(config.get("base_position_pct", 0.45))  # 45% base
         self.max_position_pct = float(config.get("max_position_pct", 0.55))  # 55% max
-        self.min_position_pct = float(config.get("min_position_pct", 0.30))  # 30% min
+        self.min_position_pct = float(config.get("min_position_pct", 0.40))  # 40% min (increased from 30%)
 
         # Risk management
-        self.stop_loss_atr_multiplier = float(config.get("stop_loss_atr_multiplier", 2.0))
+        self.stop_loss_atr_multiplier = float(config.get("stop_loss_atr_multiplier", 2.5))  # Increased from 2.0
         self.take_profit_levels = [
-            float(config.get("tp_level_1", 0.05)),  # 5%
-            float(config.get("tp_level_2", 0.08)),  # 8%
-            float(config.get("tp_level_3", 0.12)),  # 12%
+            float(config.get("tp_level_1", 0.08)),  # 8% (increased from 5%)
+            float(config.get("tp_level_2", 0.12)),  # 12% (increased from 8%)
+            float(config.get("tp_level_3", 0.18)),  # 18% (increased from 12%)
         ]
-        self.trailing_stop_pct = float(config.get("trailing_stop_pct", 0.04))  # 4%
+        self.trailing_stop_pct = float(config.get("trailing_stop_pct", 0.06))  # 6% (increased from 4%)
+
+        # Signal strength threshold
+        self.min_signal_strength = float(config.get("min_signal_strength", 0.70))  # 70% (increased from 50%)
 
         # Max drawdown protection
         self.max_drawdown_pct = float(config.get("max_drawdown_pct", 0.35))  # 35%
+
+        # Trade frequency control
+        self.min_hours_between_trades = int(config.get("min_hours_between_trades", 24))  # At least 24 hours between trades
 
         # State tracking
         self.positions: Deque[Dict[str, Any]] = deque()
@@ -93,6 +99,7 @@ class QuantumMomentumProStrategy(BaseStrategy):
         self.highest_price_since_entry: Optional[float] = None
         self.starting_portfolio_value: Optional[float] = None
         self.current_quantity: float = 0.0  # Track our position size
+        self.last_trade_time: Optional[datetime] = None  # Track last trade timestamp
 
         # Price history for indicators
         self.price_history: Deque[float] = deque(maxlen=max(self.ema_slow, self.bb_period, self.atr_period) + 50)
@@ -277,6 +284,12 @@ class QuantumMomentumProStrategy(BaseStrategy):
         if len(prices) < self.ema_slow:
             return False, 0.0, "Insufficient data for indicators"
 
+        # Trade frequency cooldown (prevent overtrading)
+        if self.last_trade_time and market.timestamp:
+            hours_since_last_trade = (market.timestamp - self.last_trade_time).total_seconds() / 3600
+            if hours_since_last_trade < self.min_hours_between_trades:
+                return False, 0.0, f"Cooldown active: {hours_since_last_trade:.1f}h / {self.min_hours_between_trades}h"
+
         # Don't buy if we have significant holdings
         current_value = portfolio.value(market.current_price)
         position_value = portfolio.quantity * market.current_price
@@ -310,9 +323,9 @@ class QuantumMomentumProStrategy(BaseStrategy):
         # Calculate signal strength for position sizing
         signal_strength = self._calculate_signal_strength(market)
 
-        # Require minimum signal strength
-        if signal_strength < 0.5:  # At least 50% confluence
-            return False, 0.0, f"Signal strength too low: {signal_strength*100:.1f}%"
+        # Require minimum signal strength (70% for quality trades)
+        if signal_strength < self.min_signal_strength:
+            return False, 0.0, f"Signal strength too low: {signal_strength*100:.1f}% (min: {self.min_signal_strength*100:.0f}%)"
 
         # Dynamic position sizing based on signal strength
         position_pct = self.min_position_pct + (signal_strength * (self.max_position_pct - self.min_position_pct))
@@ -421,6 +434,9 @@ class QuantumMomentumProStrategy(BaseStrategy):
     def on_trade(self, signal: Signal, execution_price: float, execution_size: float, timestamp: datetime) -> None:
         """Update strategy state after trade execution."""
         if signal.action == "buy" and execution_size > 0:
+            # Update last trade time for cooldown
+            self.last_trade_time = timestamp if timestamp else datetime.now(timezone.utc)
+
             # Calculate new average entry price
             if self.entry_price and self.current_quantity > 0:
                 total_value = (self.entry_price * self.current_quantity) + (execution_price * execution_size)
@@ -472,6 +488,7 @@ class QuantumMomentumProStrategy(BaseStrategy):
             "highest_price_since_entry": self.highest_price_since_entry,
             "starting_portfolio_value": self.starting_portfolio_value,
             "current_quantity": self.current_quantity,
+            "last_trade_time": self.last_trade_time.isoformat() if self.last_trade_time else None,
             "price_history": list(self.price_history)
         }
 
@@ -482,6 +499,12 @@ class QuantumMomentumProStrategy(BaseStrategy):
         self.highest_price_since_entry = state.get("highest_price_since_entry")
         self.starting_portfolio_value = state.get("starting_portfolio_value")
         self.current_quantity = state.get("current_quantity", 0.0)
+
+        # Restore last trade time
+        last_trade_str = state.get("last_trade_time")
+        if last_trade_str:
+            self.last_trade_time = datetime.fromisoformat(last_trade_str)
+
         if "price_history" in state:
             self.price_history = deque(state["price_history"], maxlen=self.price_history.maxlen)
 
