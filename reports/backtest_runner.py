@@ -30,7 +30,8 @@ except ImportError:
 # Import strategy components
 from strategy_interface import Portfolio, Signal
 from exchange_interface import MarketSnapshot
-from asymmetric_strategy import AsymmetricStrategy
+from trend_rider_strategy import TrendRiderStrategy
+from eth_dip_buyer import EthDipBuyer
 
 
 class BacktestEngine:
@@ -76,7 +77,13 @@ class BacktestEngine:
         class DummyExchange:
             pass
 
-        strategy = AsymmetricStrategy(config=strategy_config, exchange=DummyExchange())
+        # Use different strategies for BTC vs ETH
+        if "BTC" in self.symbol:
+            strategy = TrendRiderStrategy(config=strategy_config, exchange=DummyExchange())
+            print(f"   Using TrendRiderStrategy for {self.symbol}")
+        else:
+            strategy = EthDipBuyer(config=strategy_config, exchange=DummyExchange())
+            print(f"   Using EthDipBuyer for {self.symbol}")
 
         # Initialize portfolio
         portfolio = Portfolio(
@@ -272,24 +279,24 @@ def run_contest_backtest():
     print("  • Symbols: BTC-USD, ETH-USD")
     print("=" * 80)
 
-    # ASYMMETRIC STRATEGY - Different approaches for BTC vs ETH
-    strategy_config = {
-        # === BTC PARAMETERS (Trend Rider) ===
-        "btc_fast_ema_period": 20,       # Fast EMA
-        "btc_slow_ema_period": 50,       # Slow EMA
-        "btc_breakout_period": 20,       # Breakout confirmation
-        "btc_stop_loss_pct": 0.15,       # 15% hard stop
-        "btc_trailing_stop_pct": 0.20,   # 20% trailing stop
-        "btc_min_bars_between_trades": 50,  # ~2 days cooldown
+    # BTC CONFIG (TrendRiderStrategy - working at +20.29%)
+    btc_config = {
+        "fast_ema_period": 20,
+        "slow_ema_period": 50,
+        "breakout_period": 20,
+        "stop_loss_pct": 0.15,
+        "trailing_stop_pct": 0.20,  # 20% for BTC
+        "min_bars_between_trades": 50,
+        "position_pct": 0.55,
+    }
 
-        # === ETH PARAMETERS (Dip Buyer) ===
-        "eth_dip_threshold_pct": 0.020,  # 2.0% dip from 3-day high
-        "eth_lookback_hours": 72,        # 3 days (72 hours)
-        "eth_trailing_stop_pct": 0.15,   # 15% trailing stop
-        "eth_cooldown_hours": 12,        # 12 hour cooldown
-
-        # === COMMON ===
-        "position_pct": 0.55,            # 55% position size
+    # ETH CONFIG (EthDipBuyer - target +30%)
+    eth_config = {
+        "dip_threshold_pct": 0.020,  # 2% dip
+        "lookback_hours": 72,  # 3 days
+        "trailing_stop_pct": 0.15,  # 15% for ETH
+        "cooldown_hours": 12,
+        "position_pct": 0.55,
     }
 
     # Contest parameters
@@ -302,7 +309,7 @@ def run_contest_backtest():
     # Test BTC-USD
     try:
         btc_engine = BacktestEngine("BTC-USD", start_date, end_date, starting_cash)
-        btc_results = btc_engine.run(strategy_config)
+        btc_results = btc_engine.run(btc_config)
         results["BTC-USD"] = btc_results
     except Exception as e:
         print(f"\n❌ BTC-USD backtest failed: {e}")
@@ -311,7 +318,7 @@ def run_contest_backtest():
     # Test ETH-USD
     try:
         eth_engine = BacktestEngine("ETH-USD", start_date, end_date, starting_cash)
-        eth_results = eth_engine.run(strategy_config)
+        eth_results = eth_engine.run(eth_config)
         results["ETH-USD"] = eth_results
     except Exception as e:
         print(f"\n❌ ETH-USD backtest failed: {e}")
