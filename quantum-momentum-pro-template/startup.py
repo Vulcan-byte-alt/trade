@@ -11,8 +11,8 @@ if not os.path.exists(base_path):
 
 sys.path.insert(0, base_path)
 
-# Import and register the NEW simple trend strategy
-import simple_trend_strategy
+# Import and register the TREND RIDER strategy (buy and hold approach)
+import trend_rider_strategy
 
 # Import and start the universal bot
 from universal_bot import UniversalBot
