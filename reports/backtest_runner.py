@@ -30,7 +30,7 @@ except ImportError:
 # Import strategy components
 from strategy_interface import Portfolio, Signal
 from exchange_interface import MarketSnapshot
-from simple_trend_strategy import SimpleTrendStrategy
+from trend_rider_strategy import TrendRiderStrategy
 
 
 class BacktestEngine:
@@ -76,7 +76,7 @@ class BacktestEngine:
         class DummyExchange:
             pass
 
-        strategy = SimpleTrendStrategy(config=strategy_config, exchange=DummyExchange())
+        strategy = TrendRiderStrategy(config=strategy_config, exchange=DummyExchange())
 
         # Initialize portfolio
         portfolio = Portfolio(
@@ -272,24 +272,25 @@ def run_contest_backtest():
     print("  • Symbols: BTC-USD, ETH-USD")
     print("=" * 80)
 
-    # EARLY ENTRY + FAST PROFIT LOCK - Capture more of the trend
+    # TREND RIDER STRATEGY - Buy major breakouts and HOLD
+    # Goal: Make 5-10 BIG trades, not 100 small ones
     strategy_config = {
-        # Early trend detection
-        "trend_ema_period": 12,  # EMA(12) - faster entry signal
+        # Trend detection - dual EMA system
+        "fast_ema_period": 20,  # Fast EMA for entry confirmation
+        "slow_ema_period": 50,  # Slow EMA for trend direction
 
-        # Momentum confirmation
-        "momentum_period": 5,  # 5-period high - easier to trigger
+        # Breakout detection
+        "breakout_period": 20,  # Must break 20-period high (major move)
 
         # Position sizing
-        "position_pct": 0.55,  # Always 55% (max allowed)
+        "position_pct": 0.55,  # Max allowed (55%)
 
-        # Exit rules - LOCK PROFITS FAST
-        "take_profit_pct": 0.40,  # 40% - high ceiling
-        "stop_loss_pct": 0.06,  # 6% stop loss (controlled risk)
-        "trailing_stop_pct": 0.035,  # 3.5% trailing - tight profit lock
+        # Exit rules - WIDE stops to hold through volatility
+        "stop_loss_pct": 0.15,  # 15% hard stop (catastrophic only)
+        "trailing_stop_pct": 0.20,  # 20% trailing (lock in big wins)
 
-        # Trade frequency
-        "max_trades_per_month": 5  # More frequent to stay in trends
+        # Trade frequency - VERY LIMITED
+        "min_bars_between_trades": 50  # ~2 days between trades (hourly data)
     }
 
     # Contest parameters
