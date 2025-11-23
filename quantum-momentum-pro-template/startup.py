@@ -11,8 +11,8 @@ if not os.path.exists(base_path):
 
 sys.path.insert(0, base_path)
 
-# Import and register the TREND RIDER strategy (buy and hold approach)
-import trend_rider_strategy
+# Import and register the ASYMMETRIC strategy (BTC trend rider + ETH dip buyer)
+import asymmetric_strategy
 
 # Import and start the universal bot
 from universal_bot import UniversalBot

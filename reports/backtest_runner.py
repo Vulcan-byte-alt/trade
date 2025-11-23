@@ -30,7 +30,7 @@ except ImportError:
 # Import strategy components
 from strategy_interface import Portfolio, Signal
 from exchange_interface import MarketSnapshot
-from trend_rider_strategy import TrendRiderStrategy
+from asymmetric_strategy import AsymmetricStrategy
 
 
 class BacktestEngine:
@@ -76,7 +76,7 @@ class BacktestEngine:
         class DummyExchange:
             pass
 
-        strategy = TrendRiderStrategy(config=strategy_config, exchange=DummyExchange())
+        strategy = AsymmetricStrategy(config=strategy_config, exchange=DummyExchange())
 
         # Initialize portfolio
         portfolio = Portfolio(
@@ -272,25 +272,24 @@ def run_contest_backtest():
     print("  • Symbols: BTC-USD, ETH-USD")
     print("=" * 80)
 
-    # TREND RIDER STRATEGY - Buy major breakouts and HOLD
-    # Goal: Make 5-10 BIG trades, not 100 small ones
+    # ASYMMETRIC STRATEGY - Different approaches for BTC vs ETH
     strategy_config = {
-        # Trend detection - dual EMA system
-        "fast_ema_period": 20,  # Fast EMA for entry confirmation
-        "slow_ema_period": 50,  # Slow EMA for trend direction
+        # === BTC PARAMETERS (Trend Rider) ===
+        "btc_fast_ema_period": 20,       # Fast EMA
+        "btc_slow_ema_period": 50,       # Slow EMA
+        "btc_breakout_period": 20,       # Breakout confirmation
+        "btc_stop_loss_pct": 0.15,       # 15% hard stop
+        "btc_trailing_stop_pct": 0.20,   # 20% trailing stop
+        "btc_min_bars_between_trades": 50,  # ~2 days cooldown
 
-        # Breakout detection
-        "breakout_period": 20,  # Must break 20-period high (major move)
+        # === ETH PARAMETERS (Dip Buyer) ===
+        "eth_dip_threshold_pct": 0.020,  # 2.0% dip from 3-day high
+        "eth_lookback_hours": 72,        # 3 days (72 hours)
+        "eth_trailing_stop_pct": 0.15,   # 15% trailing stop
+        "eth_cooldown_hours": 12,        # 12 hour cooldown
 
-        # Position sizing
-        "position_pct": 0.55,  # Max allowed (55%)
-
-        # Exit rules - WIDE stops to hold through volatility
-        "stop_loss_pct": 0.15,  # 15% hard stop (catastrophic only)
-        "trailing_stop_pct": 0.20,  # 20% trailing (lock in big wins)
-
-        # Trade frequency - VERY LIMITED
-        "min_bars_between_trades": 50  # ~2 days between trades (hourly data)
+        # === COMMON ===
+        "position_pct": 0.55,            # 55% position size
     }
 
     # Contest parameters
