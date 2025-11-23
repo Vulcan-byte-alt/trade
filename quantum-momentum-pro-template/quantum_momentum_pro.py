@@ -292,6 +292,11 @@ class QuantumMomentumProStrategy(BaseStrategy):
             if trades_this_month >= self.max_trades_per_month:
                 return False, 0.0, f"Monthly trade limit reached: {trades_this_month}/{self.max_trades_per_month}"
 
+        # CRITICAL: Don't open new positions if we already have one
+        # This prevents the partial-sell-rebuy loop
+        if portfolio.quantity > 0:
+            return False, 0.0, "Already holding position (no re-entry until fully closed)"
+
         # Don't buy if we have significant holdings
         current_value = portfolio.value(market.current_price)
         position_value = portfolio.quantity * market.current_price
@@ -363,13 +368,12 @@ class QuantumMomentumProStrategy(BaseStrategy):
             if current_price <= trailing_stop_price:
                 return True, portfolio.quantity, f"TRAILING STOP at {pnl_pct*100:.2f}%"
 
-        # 3. Take Profit Levels (partial exits)
+        # 3. Take Profit Levels (FULL exits for clean position management)
+        # Use the FIRST (lowest) take profit level that's been reached
         for i, tp_level in enumerate(self.take_profit_levels):
             if pnl_pct >= tp_level:
-                # Sell partial position at each TP level
-                sell_pct = 0.33  # Sell 33% at each level
-                size = portfolio.quantity * sell_pct
-                return True, size, f"TAKE PROFIT {i+1} at {pnl_pct*100:.2f}%"
+                # Sell ENTIRE position to close trade cleanly
+                return True, portfolio.quantity, f"TAKE PROFIT (full exit) at {pnl_pct*100:.2f}%"
 
         # 4. Only exit on extreme overbought with good profit
         prices = list(self.price_history) + [current_price]
