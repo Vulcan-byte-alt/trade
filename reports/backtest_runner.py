@@ -269,7 +269,7 @@ def run_contest_backtest():
     print("  • Symbols: BTC-USD, ETH-USD")
     print("=" * 80)
 
-    # Strategy configuration
+    # Strategy configuration (OPTIMIZED FOR JAN-JUN 2024)
     strategy_config = {
         # Moving Averages
         "ema_fast": 20,
@@ -293,18 +293,24 @@ def run_contest_backtest():
         # ATR
         "atr_period": 14,
 
-        # Position Sizing
+        # Position Sizing (optimized for quality over quantity)
         "base_position_pct": 0.45,
         "max_position_pct": 0.55,
-        "min_position_pct": 0.30,
+        "min_position_pct": 0.40,  # Increased from 0.30
 
-        # Risk Management
-        "stop_loss_atr_multiplier": 2.0,
-        "tp_level_1": 0.05,
-        "tp_level_2": 0.08,
-        "tp_level_3": 0.12,
-        "trailing_stop_pct": 0.04,
-        "max_drawdown_pct": 0.35
+        # Signal Strength
+        "min_signal_strength": 0.70,  # 70% minimum (prevents weak signals)
+
+        # Trade Frequency Control
+        "min_hours_between_trades": 24,  # Prevent overtrading
+
+        # Risk Management (optimized for trending markets)
+        "stop_loss_atr_multiplier": 2.5,  # Wider stops for trends
+        "tp_level_1": 0.08,  # 8% (let trends develop)
+        "tp_level_2": 0.12,  # 12%
+        "tp_level_3": 0.18,  # 18%
+        "trailing_stop_pct": 0.06,  # 6% trailing
+        "max_drawdown_pct": 0.35  # 35% max drawdown
     }
 
     # Contest parameters
