@@ -272,7 +272,7 @@ def run_contest_backtest():
     print("  • Symbols: BTC-USD, ETH-USD")
     print("=" * 80)
 
-    # MOMENTUM BREAKOUT STRATEGY - Buy Strength, Ride the Wave
+    # MOMENTUM BREAKOUT STRATEGY - Ride Trends with Trailing Stop
     strategy_config = {
         # Faster trend detection
         "trend_ema_period": 20,  # EMA(20) catches trends earlier
@@ -283,10 +283,10 @@ def run_contest_backtest():
         # Position sizing
         "position_pct": 0.55,  # Always 55% (max allowed)
 
-        # Realistic exit rules
-        "take_profit_pct": 0.06,  # 6% profit (achievable!)
-        "stop_loss_pct": 0.05,  # 5% stop loss
-        "trailing_stop_pct": 0.04,  # 4% trailing from peak
+        # Exit rules - RIDE THE TREND
+        "take_profit_pct": 0.25,  # 25% - very high ceiling (rarely hits)
+        "stop_loss_pct": 0.08,  # 8% stop loss (more room to breathe)
+        "trailing_stop_pct": 0.05,  # 5% trailing from peak (lock in profits)
 
         # Trade frequency
         "max_trades_per_month": 3  # Max 3 per month
