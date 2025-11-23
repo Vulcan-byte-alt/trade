@@ -269,21 +269,21 @@ def run_contest_backtest():
     print("  • Symbols: BTC-USD, ETH-USD")
     print("=" * 80)
 
-    # SIMPLE TREND STRATEGY - Dead Simple, Proven to Work
+    # MOMENTUM BREAKOUT STRATEGY - Buy Strength, Ride the Wave
     strategy_config = {
-        # Trend indicator
-        "trend_ema_period": 50,  # EMA(50) for trend direction
+        # Faster trend detection
+        "trend_ema_period": 20,  # EMA(20) catches trends earlier
 
-        # Momentum filter
-        "rsi_period": 14,
-        "rsi_overbought": 65,  # Don't buy if RSI > 65
+        # Momentum confirmation
+        "momentum_period": 10,  # New 10-period high = breakout
 
         # Position sizing
         "position_pct": 0.55,  # Always 55% (max allowed)
 
-        # Exit rules (simple and effective)
-        "take_profit_pct": 0.10,  # 10% profit target
-        "stop_loss_pct": 0.04,  # 4% stop loss
+        # Realistic exit rules
+        "take_profit_pct": 0.06,  # 6% profit (achievable!)
+        "stop_loss_pct": 0.05,  # 5% stop loss
+        "trailing_stop_pct": 0.04,  # 4% trailing from peak
 
         # Trade frequency
         "max_trades_per_month": 3  # Max 3 per month

@@ -43,17 +43,19 @@ class SimpleTrendStrategy(BaseStrategy):
     def __init__(self, config: Dict[str, Any], exchange):
         super().__init__(config=config, exchange=exchange)
 
-        # Simple parameters
-        self.trend_ema_period = int(config.get("trend_ema_period", 50))
-        self.rsi_period = int(config.get("rsi_period", 14))
-        self.rsi_overbought = float(config.get("rsi_overbought", 65))
+        # FASTER trend detection (EMA 20 instead of 50)
+        self.trend_ema_period = int(config.get("trend_ema_period", 20))  # FASTER!
+
+        # Momentum confirmation
+        self.momentum_period = int(config.get("momentum_period", 10))  # 10-period high
 
         # Fixed position size (max allowed by contest)
         self.position_pct = float(config.get("position_pct", 0.55))  # 55%
 
-        # Simple exit rules
-        self.take_profit_pct = float(config.get("take_profit_pct", 0.10))  # 10%
-        self.stop_loss_pct = float(config.get("stop_loss_pct", 0.04))  # 4%
+        # REALISTIC exit rules (lower targets that actually get hit!)
+        self.take_profit_pct = float(config.get("take_profit_pct", 0.06))  # 6% (was 10%)
+        self.stop_loss_pct = float(config.get("stop_loss_pct", 0.05))  # 5% (was 4%)
+        self.trailing_stop_pct = float(config.get("trailing_stop_pct", 0.04))  # 4% trailing
 
         # Trade frequency control
         self.max_trades_per_month = int(config.get("max_trades_per_month", 3))
@@ -61,7 +63,8 @@ class SimpleTrendStrategy(BaseStrategy):
 
         # State
         self.entry_price: Optional[float] = None
-        self.price_history = deque(maxlen=self.trend_ema_period + 50)
+        self.highest_price_since_entry: Optional[float] = None
+        self.price_history = deque(maxlen=max(self.trend_ema_period, self.momentum_period) + 50)
 
         self._logger = logging.getLogger("strategy.simple_trend")
 
@@ -78,28 +81,14 @@ class SimpleTrendStrategy(BaseStrategy):
 
         return ema
 
-    def _calculate_rsi(self, prices: List[float]) -> Optional[float]:
-        """Calculate RSI."""
-        if len(prices) < self.rsi_period + 1:
-            return None
+    def _is_new_high(self, prices: List[float], period: int) -> bool:
+        """Check if current price is making a new high."""
+        if len(prices) < period + 1:
+            return False
 
-        gains, losses = [], []
-        for i in range(1, len(prices)):
-            change = prices[i] - prices[i-1]
-            gains.append(max(change, 0))
-            losses.append(max(-change, 0))
-
-        if len(gains) < self.rsi_period:
-            return None
-
-        avg_gain = mean(gains[-self.rsi_period:])
-        avg_loss = mean(losses[-self.rsi_period:])
-
-        if avg_loss == 0:
-            return 100
-
-        rs = avg_gain / avg_loss
-        return 100 - (100 / (1 + rs))
+        current = prices[-1]
+        previous_highs = prices[-(period+1):-1]
+        return current > max(previous_highs)
 
     def generate_signal(self, market: MarketSnapshot, portfolio: Portfolio) -> Signal:
         """Simple trend following logic."""
@@ -116,28 +105,33 @@ class SimpleTrendStrategy(BaseStrategy):
 
         # === SELL LOGIC (Check first) ===
         if portfolio.quantity > 0 and self.entry_price:
+            # Track highest price
+            if self.highest_price_since_entry is None or current_price > self.highest_price_since_entry:
+                self.highest_price_since_entry = current_price
+
             pnl_pct = (current_price - self.entry_price) / self.entry_price
 
-            # Take profit
+            # Take profit (6% target)
             if pnl_pct >= self.take_profit_pct:
                 self._logger.info(f"TAKE PROFIT: {pnl_pct*100:.2f}%")
                 return Signal("sell", size=portfolio.quantity,
                             reason=f"Take profit at +{pnl_pct*100:.1f}%",
                             entry_price=self.entry_price)
 
-            # Stop loss
+            # Trailing stop (4% from peak)
+            if self.highest_price_since_entry:
+                trailing_pct = (self.highest_price_since_entry - current_price) / self.highest_price_since_entry
+                if trailing_pct >= self.trailing_stop_pct and pnl_pct > 0:  # Only if in profit
+                    self._logger.info(f"TRAILING STOP: {pnl_pct*100:.2f}%")
+                    return Signal("sell", size=portfolio.quantity,
+                                reason=f"Trailing stop at +{pnl_pct*100:.1f}%",
+                                entry_price=self.entry_price)
+
+            # Stop loss (5% max loss)
             if pnl_pct <= -self.stop_loss_pct:
                 self._logger.info(f"STOP LOSS: {pnl_pct*100:.2f}%")
                 return Signal("sell", size=portfolio.quantity,
                             reason=f"Stop loss at {pnl_pct*100:.1f}%",
-                            entry_price=self.entry_price)
-
-            # Trend reversal exit
-            ema = self._calculate_ema(prices, self.trend_ema_period)
-            if ema and current_price < ema:
-                self._logger.info(f"TREND REVERSAL: Price {current_price:.2f} < EMA {ema:.2f}")
-                return Signal("sell", size=portfolio.quantity,
-                            reason="Trend reversal (price < EMA)",
                             entry_price=self.entry_price)
 
         # === BUY LOGIC ===
@@ -155,24 +149,24 @@ class SimpleTrendStrategy(BaseStrategy):
 
         # Calculate indicators
         ema = self._calculate_ema(prices, self.trend_ema_period)
-        rsi = self._calculate_rsi(prices)
+        is_new_high = self._is_new_high(prices, self.momentum_period)
 
-        if not ema or not rsi:
+        if not ema:
             return Signal("hold", reason="Calculating indicators")
 
-        # SIMPLE ENTRY RULES:
-        # 1. Price above EMA (uptrend)
-        # 2. RSI not overbought (room to run)
-        if current_price > ema and rsi < self.rsi_overbought:
+        # MOMENTUM BREAKOUT ENTRY:
+        # 1. Price above EMA(20) - general uptrend
+        # 2. Price making new 10-period high - momentum
+        if current_price > ema and is_new_high:
             # Calculate position size
             position_value = portfolio.value(current_price) * self.position_pct
             position_value = min(position_value, portfolio.cash)
             size = position_value / current_price
 
             if size > 0:
-                self._logger.info(f"BUY SIGNAL: Price {current_price:.2f} > EMA {ema:.2f}, RSI {rsi:.1f}")
+                self._logger.info(f"BUY SIGNAL: Momentum breakout @ {current_price:.2f}")
                 return Signal("buy", size=size,
-                            reason=f"Trend entry (price > EMA, RSI {rsi:.1f})")
+                            reason=f"Momentum breakout (new {self.momentum_period}-period high)")
 
         return Signal("hold", reason="Waiting for trend entry")
 
@@ -180,6 +174,7 @@ class SimpleTrendStrategy(BaseStrategy):
         """Track trades."""
         if signal.action == "buy" and execution_size > 0:
             self.entry_price = execution_price
+            self.highest_price_since_entry = execution_price
 
             # Update trade count
             ts = timestamp if timestamp else datetime.now(timezone.utc)
@@ -195,16 +190,19 @@ class SimpleTrendStrategy(BaseStrategy):
                 self._logger.info(f"SELL: {execution_size:.8f} @ ${execution_price:,.2f} | PnL: ${pnl:,.2f} ({pnl_pct:+.2f}%)")
 
             self.entry_price = None
+            self.highest_price_since_entry = None
 
     def get_state(self) -> Dict[str, Any]:
         return {
             "entry_price": self.entry_price,
+            "highest_price_since_entry": self.highest_price_since_entry,
             "trade_count_by_month": self.trade_count_by_month,
             "price_history": list(self.price_history)
         }
 
     def set_state(self, state: Dict[str, Any]) -> None:
         self.entry_price = state.get("entry_price")
+        self.highest_price_since_entry = state.get("highest_price_since_entry")
         self.trade_count_by_month = state.get("trade_count_by_month", {})
         if "price_history" in state:
             self.price_history = deque(state["price_history"], maxlen=self.price_history.maxlen)
